@@ -1,13 +1,62 @@
-import './App.css'
+import React, { useState } from 'react';
+import './App.css';
 
-function App() {
-  
+const turns = {
+  X: 'x',
+  O: 'o'
+};
+
+const Square = ({ children, isSelected, updateBoard, index }) => {
+  const className = `square ${isSelected ? 'is-selected' : ''}`;
+  const handleClick = () => {
+    updateBoard(index)
+  }
 
   return (
-    <>
-     <h1>Hola mundo</h1>
-    </>
+    <div onClick={handleClick} className={className}>
+      {children}
+    </div>
   )
 }
 
-export default App
+function App() {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [turn, setTurn] = useState(turns.X);
+  const updateBoard = (index) => {
+    if(board[index] != null)
+      return
+    const newBoard = [... board]
+    newBoard[index]= turn;
+    setBoard(newBoard)
+    const newTurn = turn === turns.X ? turns.O : turns.X
+    setTurn(newTurn)
+
+  }
+
+  return (
+    <main className='board'>
+      <h1>Tic Tac Toe</h1>
+      <section className='game'>
+        {board.map((_, index) => {
+          return (
+            <Square
+              key={index}
+              index={index}
+              updateBoard={updateBoard}
+            >
+              {board[index]}
+            </Square>
+          )
+          })
+        }
+      </section>
+
+      <section className='turn'>
+        <Square isSelected={turn === turns.X}>{turns.X}</Square>
+        <Square isSelected={turn === turns.O}>{turns.O}</Square>
+      </section>
+    </main>
+  );
+}
+
+export default App;
