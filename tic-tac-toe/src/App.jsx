@@ -6,10 +6,17 @@ import { turns, WINNER_COBOS } from './Constants';
 import { WinnerModal } from './components/Winner';
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [board, setBoard] = useState(() => {
+    const boardFromLocalStorage = window.localStorage.getItem('board')
+    return boardFromLocalStorage ? JSON.parse(boardFromLocalStorage) : Array(9).fill(null)
+  })
+   
   //null cuando no hay ganador, false empate
   const [winner, setWinner] = useState(null);
-  const [turn, setTurn] = useState(turns.X);
+  const [turn, setTurn] = useState(()=>{
+    const turnFromLocalStorage = window.localStorage.getItem('turn')
+    return turnFromLocalStorage ??  turns.X
+  })
 
   const checkWinner = (boardToCheck)=> {
     for(const combo of WINNER_COBOS){
@@ -33,6 +40,11 @@ function App() {
     setBoard(newBoard)
     const newTurn = turn === turns.X ? turns.O : turns.X
     setTurn(newTurn)
+
+    //guardar partida
+    window.localStorage.setItem('board', JSON.stringify(newBoard))
+    window.localStorage.setItem('turn', JSON.stringify(newTurn))
+
     const newWinner = checkWinner(newBoard)
     if(newWinner){
       confetti()
@@ -48,6 +60,9 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(turns.X)
     setWinner(null)
+
+    window.localStorage.removeItem('board')
+    window.localStorage.removeItem('turn')
   }
 
   return (
