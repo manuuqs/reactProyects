@@ -21,7 +21,12 @@ export function useCatImage ({ fact }) {
       .then(response => {
         const { _id } = response
         const url = `/cat/${_id}/says/${threeFirstWords}`
+        console.log(url)
         setImageUrl(url)
+      })
+      .catch(error => {
+        console.error('Error fetching cat image:', error)
+        setImageUrl(null) // Manejar el error de alguna manera
       })
   }, [fact])
 
