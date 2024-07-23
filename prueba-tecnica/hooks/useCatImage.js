@@ -25,6 +25,7 @@ export function useCatImage ({ fact }) {
         setImageUrl(url)
       })
       .catch(error => {
+        console.log('error!!')
         console.error('Error fetching cat image:', error)
         setImageUrl(null) // Manejar el error de alguna manera
       })
