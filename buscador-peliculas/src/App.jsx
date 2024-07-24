@@ -1,27 +1,49 @@
+import { useEffect, useState } from 'react'
 import './App.css'
 import { Movies } from './Components/Movies'
 import { useMovies } from './Hooks/useMovies'
-import { useRef } from 'react'
 
 function App() {
 
   const mappedMovies = useMovies()
-  const inputRef = useRef()
+  const [query, setQuery] = useState('')
+  const [error, setError] = useState(null)
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const inputEl = inputRef.current
-    const value = inputEl.value
-    console.log(value)
+    console.log(query)
   }
+
+  const handleChange = (event) => {
+    setQuery(event.target.value)
+  }
+
+  useEffect(()=>{
+
+    if (query === ''){
+       setError('Película vacía')
+       return
+    }
+
+    if (query.match(/^\d+$/)){
+      setError('Película con números')
+      return
+    }
+
+    if (query.length < 3){
+      setError('Película al menos debe tener 3 caracteres')
+      return
+    }
+  }, [query])
 
   return (
     <div className='page'>
       <header>
         <form className='form' onSubmit={handleSubmit}>
-          <input ref={inputRef} placeholder='Star Wars, Avenger, Jurassic World...'/>
+          <input required onChange={handleChange} value={query} name='query' placeholder='Star Wars, Avenger, Jurassic World...'/>
           <button type='submit'>Buscar</button>
         </form>
+        {error && <p style={{color : 'red'}}> {error} </p>}
       </header>
       <main>
          <Movies movies={mappedMovies}/>
