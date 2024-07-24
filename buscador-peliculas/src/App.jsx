@@ -1,52 +1,80 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { Movies } from './Components/Movies'
 import { useMovies } from './Hooks/useMovies'
 
-function App() {
+function useSearch () {
 
-  const mappedMovies = useMovies()
-  const [query, setQuery] = useState('')
+  const [search, updateSearch] = useState('')
   const [error, setError] = useState(null)
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    console.log(query)
-  }
-
-  const handleChange = (event) => {
-    setQuery(event.target.value)
-  }
+  const isFirstInput = useRef(true)
 
   useEffect(()=>{
 
-    if (query === ''){
+    if(isFirstInput.current){
+      isFirstInput.current = search === ''
+      return
+
+    }
+
+    if (search === ''){
        setError('Película vacía')
        return
     }
 
-    if (query.match(/^\d+$/)){
+    if (search.match(/^\d+$/)){
       setError('Película con números')
       return
     }
 
-    if (query.length < 3){
+    if (search.length < 3){
       setError('Película al menos debe tener 3 caracteres')
       return
     }
-  }, [query])
+
+    setError(null)
+  }, [search])
+
+  return { search, updateSearch, error }
+
+}
+
+
+function App() {
+
+  const { search, updateSearch, error } = useSearch()
+  const { movies, getMovies } = useMovies({search})
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    getMovies()
+  }
+
+  const handleChange = (event) => {
+    updateSearch(event.target.value)
+
+  }
 
   return (
     <div className='page'>
       <header>
         <form className='form' onSubmit={handleSubmit}>
-          <input required onChange={handleChange} value={query} name='query' placeholder='Star Wars, Avenger, Jurassic World...'/>
+          <input
+          style={{
+            border : '1px solid transparent',
+            borderColor : error ? 'red' : 'transparent'
+          }}
+           required
+           onChange={handleChange}
+           value={search} 
+           name='query' 
+           placeholder='Star Wars, Avenger, Jurassic World...'/>
           <button type='submit'>Buscar</button>
         </form>
         {error && <p style={{color : 'red'}}> {error} </p>}
       </header>
       <main>
-         <Movies movies={mappedMovies}/>
+         <Movies movies={movies}/>
       </main>
     </div>
   )
