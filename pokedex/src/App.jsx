@@ -1,11 +1,15 @@
-import { useState } from 'react'
 import './App.css'
 
 function App() {
 
+  // const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+
+  //const data = await response.json();
+  //const imageUrl = data.sprites.front_default;
+
   return (
     <div>
-      <p>POKEDEX</p>
+      <h1>POKEDEX</h1>
     </div>
   )
 }
