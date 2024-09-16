@@ -4,9 +4,9 @@
     justify-content: space-between;
     font-size: 14px;
     font-weight: 700;
-}
-
-.filters > div {
+  }
+  
+  .filters > div {
     display: flex;
     gap: 1rem;
-}
+  }
