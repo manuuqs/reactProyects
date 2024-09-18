@@ -1,6 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import './App.css'
 import { Pokemon } from './components/Pokemon'
+import { usePokemon } from './hooks/usePokemon'
+import debounce from 'just-debounce-it'
 
 
 function useSearch () {
@@ -31,17 +33,25 @@ return { search, updateSearch, error }
 function App() {
 
   const { search, updateSearch, error } = useSearch()
-  const { pokemon, loading, getPokemon } = useMovies({ search })
+  const { pokemon, loading, getPokemon } = usePokemon({ search })
 
   const handleSubmit = (event) => {
     event.preventDefault()
     getPokemon({ search })
   }
 
+  const debouncedGetPokemon = useCallback(
+    debounce(search => {
+      console.log('pokemon buscado: ', search)
+      getPokemon({ search })
+    }, 300)
+    , [getPokemon]
+  )
+
   const handleChange = (event) => {
     const newSearch = event.target.value
     updateSearch(newSearch)
-  //  debouncedGetMovies(newSearch)
+    debouncedGetPokemon(newSearch)
   }
 
   return (
@@ -56,7 +66,7 @@ function App() {
             }}
              onChange={handleChange} value={search} name='query' placeholder='Pikachu, Charmander, Wartortle...'
           />
-           <button type='submit'>Encontrar Pokemon</button>
+       
         </form>
       </header>
       <main>
@@ -67,5 +77,6 @@ function App() {
     </div>
   )
 }
+//    <button type='submit'>Encontrar Pokemon</button>
 
 export default App

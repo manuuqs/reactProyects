@@ -15,3 +15,34 @@ form {
     display: flex;
     justify-content: center;
 }
+
+.movies {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+}
+
+.pokemon {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+
+.pokemon h1, .movie p {
+    margin: 0;
+}
+
+.pokemon img {
+    border-radius: 8px;
+    margin-top: 16px;
+    width: 250px; /* Ajusta el ancho deseado */
+    height: auto; /* Mantiene la relación de aspecto */
+}
+
+

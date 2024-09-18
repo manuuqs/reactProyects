@@ -15,6 +15,7 @@ export function usePokemon({search}) {
             previousSearch.current = search;
             const newPokemon = await searchPokemon({ search }); // Añadido await
             setPokemon(newPokemon);
+            console.log('search 2', newPokemon)
           } catch (e) {
             setError(e.message);
           } finally {

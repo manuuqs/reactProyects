@@ -2,13 +2,16 @@
 function PokemonEncontrado({pokemon}) {
     return(
         <div className="pokemon" key={pokemon.id}>
-            <h3>{pokemon.name}</h3>
-            <img src={pokemon.sprites.front_default}/>
-            <ul className="habilidades">
+            <h1>{pokemon.name.toUpperCase() +'!!'}</h1>
+            <img src={pokemon.imagen}/>
+            <audio autoPlay>
+                <source src={pokemon.sonido} type="audio/ogg"/>
+            </audio>
+            <ul className="tipo">
                 {
-                    pokemon.abilities.map(ability => (
-                        <li  className='ability' key={ability.name}>
-                            <p>{ability.name}</p>
+                    pokemon.tipos.map(tipos => (
+                        <li  className='type' key={tipos.type.name}>
+                            <p>{tipos.type.name}</p>
                         </li>
                     ))
                 }
@@ -18,13 +21,12 @@ function PokemonEncontrado({pokemon}) {
 }
 
 function PokemonNoEncontrado (){
-
-    return (<p>Pokemon no encontrado en la Pokedex </p>)
+    return (<p>Pokemon no encontrado en la Pokedex 😢</p>)
 }
 
 export function Pokemon ({pokemon}) {
-    const hasPokemon = pokemon?.length > 0
+    const hasPokemon = pokemon && pokemon.id
     return(
-        hasPokemon ? <pokemonEncontrado pokemon={pokemon} /> : <PokemonNoEncontrado/>
+        hasPokemon ? <PokemonEncontrado pokemon={pokemon} /> : <PokemonNoEncontrado/>
     )
 }
