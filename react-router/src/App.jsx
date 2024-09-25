@@ -1,51 +1,36 @@
-/* eslint-disable react/prop-types */
-import './App.css'
-import { useEffect, useState } from 'react'
-import { EVENTS } from './const'
-import { HomePage } from './pages/Home.jsx'
-import { AboutPage } from './pages/About.jsx'
-import { Router } from './pages/Router.jsx'
+import { lazy, Suspense } from 'react'
 
-const routes = [
+import Page404 from './pages/404.jsx'
+import SearchPage from './pages/Search.jsx'
+
+import { Router } from './components/Router.jsx'
+import { Route } from './components/Route.jsx'
+
+const LazyHomePage = lazy(() => import('./pages/Home.jsx'))
+const LazyAboutPage = lazy(() => import('./pages/About.jsx'))
+
+const appRoutes = [
   {
-    path: '/',
-    Component: HomePage
-  },
-  {
-    path: '/about',
-    Component: AboutPage
+    path: '/:lang/about',
+    Component: LazyAboutPage
   },
   {
     path: '/search/:query',
-    Component: ({routeParams}) => <h1>Has buscado: {routeParams.query}</h1>
+    Component: SearchPage
   }
 ]
 
-function App() {
-  // eslint-disable-next-line no-unused-vars
-  const [currentPath, setCurrentPath] = useState(window.location.pathname)
-
-  useEffect(() => {
-    const onLocatiopnChange = () => {
-      setCurrentPath(window.location.pathname)
-    }
-
-    window.addEventListener(EVENTS.PUSHSTATE, onLocatiopnChange)
-    window.addEventListener(EVENTS.POPSTATE, onLocatiopnChange)
-
-    return () => {
-      window.removeEventListener(EVENTS.PUSHSTATE, onLocatiopnChange)
-      window.removeEventListener(EVENTS.POPSTATE, onLocatiopnChange)
-    }
-
-  }, [])
+function App () {
   return (
     <main>
-      <Router routes={routes}/>
+      <Suspense fallback={null}>
+        <Router routes={appRoutes} defaultComponent={Page404}>
+          <Route path='/' Component={LazyHomePage} />
+          <Route path='/about' Component={LazyAboutPage} />
+        </Router>
+      </Suspense>
     </main>
   )
-
- 
 }
 
 export default App
