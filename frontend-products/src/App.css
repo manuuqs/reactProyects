@@ -1,0 +1,22 @@
+
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800 px;
+}
+main {
+  width: 100%;
+}
+
+form {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+
