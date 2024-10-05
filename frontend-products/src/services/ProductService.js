@@ -1,3 +1,6 @@
+import axios from "axios";
+
+const URL = 'http://localhost:8080/products'
 
 const initProducts = [
     {
@@ -16,4 +19,44 @@ const initProducts = [
 
 export const listProduct = () => {
     return initProducts; 
+}
+
+export const findAll = async() => {
+    try {
+        const response = await axios.get(URL);
+        return response;   
+    } catch (error) {
+        console.log(error)
+    }
+    return null;
+}
+
+export const create = async ({name, description, price}) => {
+
+    try {
+        const response = await axios.post(URL, {
+            name,
+            description,
+            price
+        })
+        return response   
+    } catch (error) {
+        console.log(error)
+    }
+    return undefined
+}
+
+export const update = async ({id, name, description, price}) => {
+
+    try {
+        const response = await axios.put(URL + '/'+ id , {
+            name,
+            description,
+            price
+        })
+        return response   
+    } catch (error) {
+        console.log(error)
+    }
+    return undefined
 }
