@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { create, findAll, update } from "../services/ProductService";
+import { create, findAll, remove, update } from "../services/ProductService";
 import { ProductGrid } from "./ProductGrid";
 import { PropTypes } from 'prop-types';
 import { ProductForm } from "./ProductForm";
@@ -41,6 +41,7 @@ export const ProductApp = ({ title }) => {
     }
     const handlerRemoveProduct = (id) => {
         console.log(id);
+        remove(id) //no se pone await porque no tenemos que recuperar obj
         setProducts(products.filter(product => product.id != id));
     }
 
