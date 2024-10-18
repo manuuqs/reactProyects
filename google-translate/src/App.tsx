@@ -1,82 +1,49 @@
-/* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable react/react-in-jsx-scope */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { useReducer } from 'react';
-import { Action, type State } from './types';
-
-const initialState: State = {
-  fromLanguage: 'auto',
-  toLanguage: 'en',
-  fromText: '',
-  result: '',
-  loading: false
-}
-
-function reducer(state: State, action: Action) {
-  const {type} = action
-
-  if(type === 'INTERCHANGE_LANGUAGES'){
-    return {
-      ...state,
-      fromLanguage: state.toLanguage,
-      toLanguage: state.fromLanguage
-    }
-  }
-
-  if(type === 'SET_FROM_LANGUAGE'){
-    return {
-      ...state,
-      fromLanguage: action.payload
-    }
-  }
-
-  if(type === 'SET_TO_LANGUAGE'){
-    return {
-      ...state,
-      toLanguage: action.payload
-    }
-  }
-
-  if(type === 'SET_FROM_TEXT'){
-    return {
-      ...state,
-      loading: true,
-      fromText: action.payload,
-      result: ''
-    }
-  }
-
-  if(type === 'SET_RESULT'){
-    return {
-      ...state,
-      loading: false,
-      result: action.payload
-    }
-  }
-
-  return state
-}
+import { useStore } from './hooks/useStore';
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { AUTO_LANGUAGE } from './constants';
+import { ArrowsIcon } from './components/icons';
+import { LanguageSelector } from './components/LaguagerSelector';
+import { SectionType } from './types.d';
+import { TextArea } from './components/TextArea';
 
 function App() {
 
-  const [{
-    fromLanguage,
-    toLanguage,
-    fromText,
-    result,
-    loading
-  }, dispatch] = useReducer(reducer, initialState)
-
-  console.log({fromLanguage})
+  const {fromLanguage, toLanguage, interchangeLanguages, setFromLanguage, setToLanguage, fromText, setFromText, loading, result, setResult} = useStore()
 
   return (
-    <div className='App'>
+    <Container fluid>
       <h1>Google Translate</h1>
-      <button onClick={()=>{
-        dispatch({type:'SET_FROM_LANGUAGE', payload: 'es'})
-      }}>Cambiar a Español</button>
-    </div>
+
+      <Row>
+        <Col >
+          <LanguageSelector onChange={setFromLanguage} type={SectionType.From} value={fromLanguage}/>
+          <TextArea
+              type={SectionType.From}
+              value={fromText}
+              onChange={setFromText}
+            />
+        </Col>
+
+        <Col xs='auto'>
+          <Button variant='link' disabled={fromLanguage === AUTO_LANGUAGE} onClick={interchangeLanguages}>
+          <ArrowsIcon />
+          </Button>
+        </Col>
+
+        <Col>
+        <LanguageSelector onChange={setToLanguage}  type={SectionType.To} value={toLanguage}/>
+        <TextArea
+              loading={loading}
+              type={SectionType.To}
+              value={result}
+              onChange={setResult}
+            />
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
