@@ -15,7 +15,7 @@ const syncWithDatabaseMiddleware: Middleware = (store) => (next) => (action) => 
     next(action);
     
     if (type === "users/deleteUserById") {
-        const userToRemove = previousState.users.find(user => user.id === payload);
+        const userToRemove = previousState.users.find((user: { id: unknown }) => user.id === payload);
         fetch(`https://jsonplaceholder.typicode.com/users/${payload}`, {
             method: "DELETE",
         })
