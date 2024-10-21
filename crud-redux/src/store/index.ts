@@ -1,5 +1,6 @@
 import { configureStore, type Middleware } from "@reduxjs/toolkit";
-import usersReducer from "./users/slice";
+import usersReducer, { rollbackUserById } from "./users/slice";
+
 
 // Middleware para persistir el estado en LocalStorage
 const persistanceLocalStorageMiddleware: Middleware = (store) => (next) => (action) => {
@@ -9,9 +10,24 @@ const persistanceLocalStorageMiddleware: Middleware = (store) => (next) => (acti
 
 // Middleware para sincronizar con la base de datos (ejemplo)
 const syncWithDatabaseMiddleware: Middleware = (store) => (next) => (action) => {
-    const { type, payload } = action;
+    const { type, payload } = action as { type: string; payload: unknown };
+    const previousState = store.getState();
     next(action);
-    // Aquí podrías agregar la lógica para sincronizar con la base de datos
+    
+    if (type === "users/deleteUserById") {
+        const userToRemove = previousState.users.find(user => user.id === payload);
+        fetch(`https://jsonplaceholder.typicode.com/users/${payload}`, {
+            method: "DELETE",
+        })
+        .then(response => {
+           if (response.ok) console.log("Usuario eliminado con éxito");
+        })
+        .catch(() => {
+            if (userToRemove) store.dispatch(rollbackUserById(userToRemove));
+            console.error("Error al eliminar el usuario:");
+        });
+    }
+
 }
 
 export const store = configureStore({

@@ -39,22 +39,27 @@ export interface UserWithId extends User {
 }
 
 export const usersSlice = createSlice({
-    name:"users",
+    name: "users",
     initialState,
     reducers: {
-		addNewUser: (state, action: PayloadAction<User>) => {
-			const id = crypto.randomUUID()
-			return [...state, {id, ...action.payload}]
-		},
-		deleteUserById: (state, action:PayloadAction<UserId>) => {
-			const id = action.payload
-			return state.filter((user) => user.id != id)
-		},
-	},
+        addNewUser: (state, action: PayloadAction<User>) => {
+            // ... código existente ...
+        },
+        deleteUserById: (state, action: PayloadAction<UserId>) => {
+            // ... código existente ...
+        },
+        rollbackUserById: (state, action: PayloadAction<UserWithId>) => {
+            const isUserAlreadyDefined = state.some(user => user.id === action.payload.id)
+            if (!isUserAlreadyDefined) {
+                return [...state, action.payload]
+            }
+            return state
+        }
+    }
 });
 
 export default usersSlice.reducer;
 
 export const {deleteUserById} = usersSlice.actions
 export const {addNewUser} = usersSlice.actions
-
+export const {rollbackUserById} = usersSlice.actions

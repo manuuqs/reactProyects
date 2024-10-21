@@ -22,7 +22,6 @@ export function ListOfUsers () {
 
     return (
       <Card>
-        <p className='text-red-500 text-lg'>Hola mundo</p>
         <Title>
             Usuarios
             <Badge style={{ marginLeft: '8px' }}>{users.length}</Badge>
